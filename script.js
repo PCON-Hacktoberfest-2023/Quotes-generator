@@ -56,7 +56,8 @@ function renderQuote(q) {
 	container.innerHTML = ""; // clear
 	const txt = document.createElement("div");
 	txt.className = "quote-text";
-	txt.textContent = q.text;
+	// wrap displayed quote in typographic quotation marks
+	txt.textContent = `“${q.text}”`;
 	const auth = document.createElement("div");
 	auth.className = "quote-author";
 	auth.textContent = q.author ? `— ${q.author}` : "";
