@@ -18,6 +18,19 @@
     <div id="qid">The best way out is always through</div>
     <br />
     <button onclick="func()">New Quote</button>
+
+    <!-- Add-quote form (optional) -->
+    <form id="addQuoteForm" onsubmit="event.preventDefault();">
+      <input id="newQuoteText" placeholder="Write a new quote..." required
+        style="width:60%;padding:.4rem;border-radius:6px;margin-top:.6rem;">
+      <input id="newQuoteAuthor" placeholder="Author (optional)"
+        style="width:25%;padding:.4rem;border-radius:6px;margin-left:.4rem;">
+      <button type="button" onclick="(function(){ 
+          const t = document.getElementById('newQuoteText').value;
+          const a = document.getElementById('newQuoteAuthor').value;
+          if(window.addQuote && window.addQuote(t,a)) { document.getElementById('newQuoteText').value=''; document.getElementById('newQuoteAuthor').value=''; alert('Quote added'); } else { alert('Invalid or duplicate quote'); }
+      })()">Add Quote</button>
+    </form>
   </div>
   <script src="script.js"></script>
 </body>
