@@ -1,88 +1,111 @@
 # Quotes-generator
 
-A small, responsive Quote Generator web page. Click "New Quote" to show a different quote; add your own quotes via the built-in form or from the browser console — quotes persist in localStorage.
+Minimal, responsive Quote Generator — a single-page web app that shows a quote, lets users add new quotes, and persists them to localStorage.
 
-## Demo
+Quick links
 
-- Open `index.html` in your browser (no server required).
-- Click "New Quote" to cycle through quotes (no immediate repeats until the pool is exhausted).
-- Add quotes using the form in the page or programmatically (see Usage).
+- Live demo: open `index.html` in your browser (no server required)
+- Quote element: `div#qid`
+- Primary files: `index.html`, `styles.css`, `script.js`
 
-## Features
+Why this project
 
-- Minimal, dark-themed responsive UI (see `styles.css`)
-- Non-repeating shuffle pool so quotes rotate before repeating
-- Persistent user-added quotes via `localStorage`
-- Small, dependency-free codebase: `index.html`, `styles.css`, `script.js`
-- Accessibility considerations and reduced-motion support
+- Tiny, dependency-free UI for quickly viewing inspirational quotes
+- Non-repeating shuffle pool so every quote is shown before repeats
+- User-added quotes persist across sessions via `localStorage`
+- Works offline entirely in the browser
 
-## Files
+Features
 
-- `index.html` — page markup and UI. Quote container: `div#qid`.
-- `styles.css` — UI styling and responsive rules.
-- `script.js` — application logic (loading, rendering, adding, shuffling, persistence).
-- `README.md` — documentation.
+- Modern dark theme and responsive layout (see `styles.css`)
+- Floating Action Buttons (FABs): New Quote and Add Quote remain visible
+- Accessible markup and reduced-motion support
+- Simple programmatic API for automation / testing
 
-## Quick start
+Contents
 
-1. Clone or download the repository.
-2. Open `index.html` in any modern browser (Windows, macOS, Linux).
-3. Click "New Quote" or add your own quote.
+- `index.html` — page markup and UI
+- `styles.css` — design, responsive rules, and FAB placement
+- `script.js` — quote data, shuffle logic, rendering, persistence
+- `README.md` — this documentation
 
-## Usage
+Quick start
 
-From the page UI
+1. Clone or download the repo.
+2. Open `index.html` in a modern browser (Chrome, Edge, Firefox, Safari).
+3. Click "New Quote" to show another quote. Use the form to add quotes.
 
-- "New Quote" button — shows the next quote from an internal shuffled pool.
-- Add-quote form — enter quote text and optional author, then click "Add Quote". Validates emptiness and prevents exact duplicates.
+Usage — UI
 
-Programmatically (browser console)
+- New Quote (FAB, bottom-right): displays the next quote from a shuffled pool.
+- Add Quote (FAB, bottom-left): open the form in the page, enter quote text and optional author, then click Add. The form validates non-empty input and prevents exact duplicates.
+
+Usage — programmatic API (browser console)
 
 - Show a new quote:
   - window.newQuote()
-  - or call the backwards-compatible function window.func()
+  - window.func() (alias)
 - Add a quote:
   - window.addQuote("Your quote text", "Author Name")
-  - Returns true on success, false on invalid/duplicate input.
-
-Developer-facing functions (exposed on `window`)
-
-- newQuote() — render next quote
-- func() — alias for newQuote()
-- addQuote(text, author) — add and persist a quote
-
-Persistence
-
-- Quotes are stored in `localStorage` under the key `quotes-v1`.
-- To reset to the default quotes, clear that key from DevTools Application > Local Storage, or run:
-  - localStorage.removeItem('quotes-v1');
-
-## How it works (brief)
-
-- On load, `script.js` reads saved quotes from `localStorage` or falls back to `defaultQuotes`.
-- A "pool" is a shuffled copy of the quotes. Each call to newQuote() pops one quote from the pool.
-- When the pool is empty it is reshuffled from the full quotes array — this ensures all quotes are shown before repeats.
-- addQuote() appends to the quotes array, persists to `localStorage`, and resets the pool.
-
-## Styling notes
-
-- Quote text uses `.quote-text`, author uses `.quote-author` — modify `styles.css` to change typography or layout.
-- The main quote container in the markup uses the id `qid`.
-
-## Contributing
-
-1. Fork the repo.
-2. Create a feature branch.
-3. Keep changes small and focused; update README when adding features.
-4. Open a pull request describing your change.
-
-## License
-
-Add a LICENSE file (MIT recommended) to make this repository open source.
-
-## Troubleshooting
-
-- If new quotes don't appear after adding, check browser console for errors and verify `localStorage` is writable (some private modes restrict storage).
-- To debug quotes state in console:
+  - Returns boolean: true on success, false for invalid or duplicate input.
+- Inspect persisted quotes:
   - JSON.parse(localStorage.getItem('quotes-v1') || '[]')
-  - Or inspect the `quotes` variable in DevTools (page must be open).
+
+Persistence & reset
+
+- Storage key: `quotes-v1` in `localStorage`
+- To reset to the built-in default quotes:
+  - localStorage.removeItem('quotes-v1'); location.reload();
+
+How it works (brief)
+
+- On load, `script.js` reads `quotes-v1` from `localStorage` or falls back to the built-in `defaultQuotes`.
+- The app creates a shuffled "pool" copy of the quotes. Each call to newQuote() pops one quote from the pool.
+- When the pool empties it is reshuffled — this ensures no immediate repeats until all quotes have been shown.
+- addQuote() appends a quote to the quotes array, saves to localStorage, and resets the pool so the new quote participates immediately.
+
+Styling notes
+
+- Quote text uses `.quote-text`, author uses `.quote-author`.
+- Floating buttons are fixed to the viewport to remain visible; CSS rules ensure dialogs/modals render above them (see `styles.css`).
+- To customize typography, edit the fonts and sizes in `styles.css`.
+
+Accessibility
+
+- Reduced-motion preference is respected.
+- Buttons have visible focus styles; consider adding ARIA labels if you change button markup.
+- If you add dialogs, the CSS includes rules to move FABs out of the way and ensure dialogs have higher z-index.
+
+Extending
+
+- Add more default quotes in `script.js` (the `defaultQuotes` array).
+- Replace the storage mechanism with a backend API by swapping persistence calls in `saveQuotes()` / `loadQuotes()`.
+
+Contributing
+
+1. Fork the repository.
+2. Create a branch for your feature or fix.
+3. Keep changes small and document them in this README or in a CHANGELOG.
+4. Open a Pull Request.
+
+Examples
+
+- Add a quote from the console:
+  - window.addQuote("Do small things with great love.", "Mother Teresa")
+- Show the next quote:
+  - window.newQuote()
+
+Troubleshooting
+
+- If quotes don't persist, check browser privacy settings and confirm `localStorage` is available.
+- If the UI seems to hide behind the FABs, either scroll the page or open DevTools and check for unexpected CSS overrides.
+- Debug storage state:
+  - console.log(JSON.parse(localStorage.getItem('quotes-v1') || '[]'))
+
+License
+
+- No license file included. Add a LICENSE (MIT recommended) to make this repo open source.
+
+Contact / feedback
+
+- Open an issue or PR with suggestions, bug reports, or improvements.
